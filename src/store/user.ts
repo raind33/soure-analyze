@@ -11,13 +11,14 @@ const userStore: Module<any, any> =  {
     }
   },
   mutations: {
-    setA(state, payload) {
+    setUserA(state, payload) {
       state.a = payload
     }
   },
   actions: {
-    getData( { commit }) {
-      commit('setA')
+    setUser( { commit }, payload) {
+      debugger
+      commit('setUserA', 777)
     }
   },
   modules: {
@@ -28,6 +29,11 @@ const userStore: Module<any, any> =  {
       getters: {
         d(state) {
           return state.a
+        }
+      },
+      actions: {
+        setUserA( { commit }) {
+          commit('setA')
         }
       },
       namespaced: true

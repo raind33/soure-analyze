@@ -4,7 +4,7 @@ import { useStore } from 'vuex4';
 const store = useStore()
 console.log(store)
 const add = () => {
-  store.commit('user/setA', 999)
+  store.dispatch('user/setUser', 888)
 }
 </script>
 

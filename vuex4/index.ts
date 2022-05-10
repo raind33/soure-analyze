@@ -30,9 +30,9 @@ interface ActionTree<S, R>{
 }
 type Action<S,R> = (actionContext: ActionContext<S,R>, payload?:any) => void
 interface ActionContext<S,R> {
-  dispatch: Dispatch,
+  // dispatch: Dispatch,
   commit: Commit
-  state: S
+  // state: S
 }
 type Dispatch = (type: string, payload?: any) => any
 type Commit = (type: string, payload?: any) => void
@@ -69,15 +69,18 @@ class Store<S>{
     app.provide(injectKey, this)
   }
   commit_(type: string, payload?: any) {
-    debugger
-    if(this.mutations[type]) {
-      this.mutations[type](payload)
+    if(!this.mutations[type]) {
+      throw new Error('不存在mutation')
+      return
     }
+    this.mutations[type](payload)
   }
   dispatch_(type: string, payload?: any) {
-    if(this.actions[type]) {
-      this.actions[type](payload)
+    if(!this.actions[type]) {
+      throw new Error('不存在action')
+      return
     }
+    this.actions[type](payload)
   }
 }
 class ModuleCollection<R> {
@@ -151,13 +154,22 @@ class ModuleWrapper<S,R> {
       })
     }
   }
+  forEachActions(fn: ActionToKey<S, R>) {
+    if(this.rawModule.actions) {
+      Object.keys(this.rawModule.actions).forEach(key => {
+        fn((this.rawModule.actions as any)[key], key)
+      })
+    }
+  }
 }
 
 type MutaionToKey<S> = (mutation: Mutation<S>, key: string) => any
+type ActionToKey<S,R> = (action: Action<S,R>, key: string) => any
 type GetterToKey<R> = (getter: Getter<any, R>, key: string) => any
 type childModuleWrapperToKey<R> = (moduleWrapper: ModuleWrapper<any, R>, key: string) => void
 function installModule<R>(store: Store<R>, rootState_: R, path: string[], module: ModuleWrapper<any, R>) {
   const namespace = store.moduleCollection.getNamespace(path)
+  const actionContext: ActionContext<any,R> = makeLocalContext(store, namespace)
   if(path.length) {
     console.log(namespace)
     const parentState: Record<string, any> = getParentState<R>(rootState_, path.slice(0, -1))
@@ -180,6 +192,23 @@ function installModule<R>(store: Store<R>, rootState_: R, path: string[], module
       mutation(module.state, payload)
     }
   })
+  module.forEachActions((action, key) => {
+    const name = namespace+key
+    store.actions[name] = (payload: any) => {
+      action(actionContext, payload)
+    }
+  })
+}
+function makeLocalContext<R>(store:Store<R>, namespace: string) {
+  let nonamespace = namespace === ''
+
+  let actionContext: ActionContext<any,R> = {
+    commit: nonamespace ? store.commit : (type, payload) => {
+      type = namespace + type
+      store.commit(type, payload)
+    }
+  }
+  return actionContext
 }
 function getParentState<S>(rootState_: S, path: string[]) {
   return path.reduce((state, key) => {
