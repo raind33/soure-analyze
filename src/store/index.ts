@@ -1,6 +1,6 @@
 import { createStore } from '../../vuex4'
 import user from './user'
-import test from './test'
+import test from './testStore'
 
 export default createStore({
   state: {
