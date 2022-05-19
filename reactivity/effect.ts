@@ -6,10 +6,9 @@ class ReactiveEffect {
   fn!: Fn
   constructor(fn: Fn) {
     this.fn = fn
-    activeEffect = this
-    this.run()
   }
   run() {
+    activeEffect = this
     this.fn()
   }
 }
