@@ -14,4 +14,16 @@ describe('effect', () => {
     user.age = 5
     expect(nextAge).toBe(6)
   })
+  test('effect返回值', () => {
+    let nextAge = 1
+    const runner = effect(() => {
+      nextAge++
+      return 'rain'
+    })
+    expect(nextAge).toBe(2)
+    const r = runner()
+    expect(nextAge).toBe(3)
+    expect(r).toBe('rain')
+  })
+  
 })
