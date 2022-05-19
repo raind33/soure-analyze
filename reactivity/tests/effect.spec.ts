@@ -1,3 +1,5 @@
+import { reactive, effect } from "../reactive"
+
 describe('effect', () => {
   test('normal', () => {
     const user = reactive({
@@ -12,5 +14,3 @@ describe('effect', () => {
     expect(nextAge).toBe(6)
   })
 })
-
-export {}

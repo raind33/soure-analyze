@@ -1,3 +1,5 @@
+import { reactive } from '../reactive'
+
 describe('reactive', () => {
   test('normal', () => { 
     const target = { num: 1 }

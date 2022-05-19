@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "jest --config jest.config.ts"
+    "test": "jest --config jest.config.js"
   },
   "dependencies": {
     "vue": "^3.2.25"
