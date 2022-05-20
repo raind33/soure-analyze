@@ -7,17 +7,21 @@ export class ReactiveEffect {
   fn!: Fn
   scheduler?: Fn
   onStop?: Fn
+  active: boolean = true
   deps: Set<ReactiveEffect>[] = []
   constructor(fn: Fn) {
     this.fn = fn
   }
   run() {
     activeEffect = this
-    this.onStop && this.onStop()
     return this.fn()
   }
   stop() {
-    cleanupEffect(this)
+    if(this.active) {
+      cleanupEffect(this)
+      this.onStop && this.onStop()
+      this.active = false
+    }
   }
 }
 
