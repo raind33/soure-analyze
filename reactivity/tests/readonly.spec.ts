@@ -1,4 +1,4 @@
-import { readonly } from '../reactive'
+import { isReadonly, readonly } from '../reactive'
 
 describe('readonly', () => {
   test('normal', () => { 
@@ -14,5 +14,12 @@ describe('readonly', () => {
     const target = readonly({ num: 1 })
     target.num = 8
     expect(console.warn).toHaveBeenCalled()
+   })
+   test('isReadonly', () => { 
+    const target = { num: 1 }
+    const observed = readonly(target)
+
+    expect(isReadonly(observed)).toBe(true)
+    expect(isReadonly(target)).toBe(false)
    })
 })

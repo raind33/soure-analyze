@@ -1,4 +1,5 @@
 import { track, trigger } from "./effect"
+import { ReactiveFlags } from "./reactive"
 import { Original } from "./types"
 
 const get = createGetter()
@@ -8,6 +9,11 @@ const readonlyGet = createGetter(true)
 function createGetter<T extends Original>(isReadonly?:boolean) {
   return function get(target:T, key:any) {
     const result = Reflect.get(target, key)
+    if(key === ReactiveFlags.IS_REACTIVE) {
+      return !isReadonly
+    } else if (key === ReactiveFlags.IS_READONLY) {
+      return isReadonly
+    }
     if(!isReadonly) {
       track(target, key)
     }
