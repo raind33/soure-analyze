@@ -15,4 +15,17 @@ describe('reactive', () => {
     expect(isReactive(observed)).toBe(true)
     expect(isReactive(target)).toBe(false)
    })
+   test('nested object ', () => { 
+    const target = { 
+      nested: {
+        a: 1
+      },
+      b: [{c:3}]
+    }
+    const observed = reactive(target)
+
+    expect(isReactive(observed.nested)).toBe(true)
+    expect(isReactive(observed.b)).toBe(true)
+    expect(isReactive(observed.b[0])).toBe(true)
+   })
 })
