@@ -1,4 +1,4 @@
-import { isReadonly, readonly } from '../reactive'
+import { isReadonly, readonly, shallowReadonly } from '../reactive'
 
 describe('readonly', () => {
   test('normal', () => { 
@@ -34,5 +34,16 @@ describe('readonly', () => {
     expect(isReadonly(observed.nested)).toBe(true)
     expect(isReadonly(observed.b)).toBe(true)
     expect(isReadonly(observed.b[0])).toBe(true)
+   })
+   test('shallowReadonly ', () => { 
+    const target = { 
+      nested: {
+        a: 1
+      }
+    }
+    const observed = shallowReadonly(target)
+
+    expect(isReadonly(observed)).toBe(true)
+    expect(isReadonly(observed.nested)).toBe(false)
    })
 })
