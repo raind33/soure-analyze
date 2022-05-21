@@ -28,4 +28,7 @@ export function isReadonly(obj: any): boolean {
 export function isReactive(obj: any): boolean {
   return !!obj[ReactiveFlags.IS_REACTIVE]
 }
+export function isProxy(obj:any) {
+  return isReadonly(obj) || isReactive(obj)
+}
 
