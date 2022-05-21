@@ -14,6 +14,20 @@ describe('effect', () => {
     user.age = 5
     expect(nextAge).toBe(6)
   })
+  // test('same val not triggter', () => {
+  //   const user = reactive({
+  //     age: 2
+  //   })
+  //   let nextAge
+  //   let calls = 0
+  //   effect(() => {
+  //     calls++
+  //     nextAge = user.age
+  //   })
+  //   expect(nextAge).toBe(2)
+  //   user.age = 2
+  //   expect(calls).toBe(1)
+  // })
   test('effect返回值', () => {
     let nextAge = 1
     const runner = effect(() => {

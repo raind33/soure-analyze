@@ -1,5 +1,5 @@
 import { extend } from "../shared/utils"
-import { Fn, Original, ReactiveEffectRunner } from "./types"
+import { Dep, Fn, Original, ReactiveEffectRunner } from "./types"
 
 let activeEffect:ReactiveEffect // 只有reactive配合effect使用时, 才会存在activeEffect
 let shouldTrack: boolean = true  // stop后，避免再次收集依赖
@@ -8,9 +8,10 @@ export class ReactiveEffect {
   scheduler?: Fn
   onStop?: Fn
   active: boolean = true
-  deps: Set<ReactiveEffect>[] = []
-  constructor(fn: Fn) {
+  deps: Dep[] = []
+  constructor(fn: Fn, scheduler?: Fn) {
     this.fn = fn
+    this.scheduler = scheduler
   }
   run() {
     if(!this.active) {
@@ -40,7 +41,7 @@ export function effect(fn: Fn, options?:any):ReactiveEffectRunner {
   return runner
 }
 
-const targetMap = new Map<Original, Map<string, Set<ReactiveEffect>>>()
+const targetMap = new Map<Original, Map<string, Dep>>()
 export function track(target:Original, key:any) {
   if(!isTracking()) return
   let depsMap = targetMap.get(target)
@@ -53,17 +54,24 @@ export function track(target:Original, key:any) {
     deps = new Set()
     depsMap.set(key, deps)
   }
+  trackEffects(deps)
+}
+
+export function trackEffects(deps: Dep) {
   if(deps.has(activeEffect)) return // 避免重复收集
   deps.add(activeEffect)
   activeEffect.deps.push(deps)
 }
-function isTracking():boolean {
+export function isTracking():boolean {
   
   return activeEffect && shouldTrack
 }
 export function trigger(target:Original, key:any) {
   const depsMap = targetMap.get(target)
   const deps = depsMap!.get(key)
+  triggerEffects(deps!)
+}
+export function triggerEffects(deps: Dep) {
   for(const effect of deps!) {
     if(effect.scheduler) {
       effect.scheduler()
@@ -72,7 +80,6 @@ export function trigger(target:Original, key:any) {
     }
   }
 }
-
 export function stop(runner:ReactiveEffectRunner) {
   runner.effect.stop()
 }
