@@ -1,5 +1,6 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import store from '@/store'
+import { createApp } from '../runtime-core'
+// import App from './App.vue'
+import TestVue from './test-vue.vue'
+// import store from '@/store'
 
-createApp(App).use(store).mount('#app')
+createApp(TestVue).mount(document.querySelector('#app'))
