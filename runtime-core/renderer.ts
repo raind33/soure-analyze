@@ -40,15 +40,15 @@ function mountChildren(vnode:any, container:any) {
     patch(child, container)
   })
 }
-function mountComponent(vnode:any, container:any) {
-  const instance = createComponentInstance(vnode)
+function mountComponent(initialVnode:any, container:any) {
+  const instance = createComponentInstance(initialVnode)
   setupComponent(instance)
-  setupRenderEffect(instance, container, vnode)
+  setupRenderEffect(instance, container, initialVnode)
 }
 
-function setupRenderEffect(instance:any, container:any, vnode:any) {
+function setupRenderEffect(instance:any, container:any, initialVnode:any) {
   const subTree:any = instance.render.call(instance.proxy)
   patch(subTree, container)
   // 组件vnode设置el
-  vnode.el = subTree.el
+  initialVnode.el = subTree.el
 }
