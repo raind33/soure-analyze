@@ -4,12 +4,12 @@ const app = createApp({
   setup () {
 
     return {
-      a: 1323
+      a: '13239999'
     }
   },
   render() {
     return h('div', { id: 'd', class: 'c'}, [
-      h('span', {class: 'e'}, '2323')
+      h('span', {class: 'e'}, this.a)
     ])
   }
 })

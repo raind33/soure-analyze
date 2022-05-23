@@ -22,7 +22,7 @@ function processElement(vnode:any, container:any) {
 
 function mountElement(vnode:any, container:any) {
   const { type, children, props } = vnode
-  const el: HTMLElement = document.createElement(type)
+  const el: HTMLElement = (vnode.el = document.createElement(type))
   if(isObject(props)) {
     for(let prop in props) {
       el.setAttribute(prop, props[prop])
@@ -43,10 +43,12 @@ function mountChildren(vnode:any, container:any) {
 function mountComponent(vnode:any, container:any) {
   const instance = createComponentInstance(vnode)
   setupComponent(instance)
-  setupRenderEffect(instance, container)
+  setupRenderEffect(instance, container, vnode)
 }
 
-function setupRenderEffect(instance:any, container:any) {
-  const subTree = instance.render()
+function setupRenderEffect(instance:any, container:any, vnode:any) {
+  const subTree:any = instance.render.call(instance.proxy)
   patch(subTree, container)
+  // 组件vnode设置el
+  vnode.el = subTree.el
 }
