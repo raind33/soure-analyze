@@ -1,7 +1,10 @@
 import typescript from '@rollup/plugin-typescript';
 export default {
   input: "./runtime-core/index.ts",
-  plugins: [typescript()],
+  plugins: [typescript({
+    include: ['./runtime-core/**/*.ts', './shared/**/*.ts'],
+    tsconfig: false
+  })],
   output: [
     {
       format: 'es',
