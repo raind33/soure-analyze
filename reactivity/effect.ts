@@ -1,4 +1,4 @@
-import { extend } from "../shared/utils"
+import { extend } from "../shared"
 import { Dep, Fn, Original, ReactiveEffectRunner } from "./types"
 
 let activeEffect:ReactiveEffect // 只有reactive配合effect使用时, 才会存在activeEffect

@@ -1,4 +1,4 @@
-import { extend, isObject } from "../shared/utils"
+import { extend, isObject } from "../shared"
 import { track, trigger } from "./effect"
 import { reactive, ReactiveFlags, readonly } from "./reactive"
 import { Original } from "./types"

@@ -1,5 +1,5 @@
 import { unref } from "vue"
-import { isObject } from "../shared/utils"
+import { isObject } from "../shared"
 import { isTracking, trackEffects, triggerEffects } from "./effect"
 import { reactive } from "./reactive"
 import { Dep } from "./types"
