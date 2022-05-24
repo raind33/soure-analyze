@@ -8,7 +8,9 @@ const app = createApp({
     }
   },
   render() {
-    return h('div', { id: 'd', class: 'c'}, [
+    return h('div', { id: 'd', class: 'c', onClick() {
+      console.log(888);
+    }}, [
       h('span', {class: 'e'}, this.a)
     ])
   }

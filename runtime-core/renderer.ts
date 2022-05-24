@@ -26,7 +26,15 @@ function mountElement(vnode:any, container:any) {
   const el: HTMLElement = (vnode.el = document.createElement(type))
   if(isObject(props)) {
     for(let prop in props) {
-      el.setAttribute(prop, props[prop])
+      const val = props[prop]
+      const isOn = (key:any) => /^on[A-Z]/.test(key)
+      if(isOn(prop)) {
+        const event = prop.slice(2).toLowerCase()
+        el.addEventListener(event, val)
+      } else {
+
+        el.setAttribute(prop, val)
+      }
     }
   }
   if(vnode.shapeFlag & ShapeFlags.TEXT_CHILDREN) {
