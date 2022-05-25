@@ -1,5 +1,6 @@
 import { initProps } from "./componentProps"
 import { publicInstanceProxyHandlers } from "./componentPublicInstance"
+import { initSlots } from "./componentSlots"
 
 
 export function createComponentInstance(vnode:Record<any,any>) {
@@ -7,12 +8,14 @@ export function createComponentInstance(vnode:Record<any,any>) {
     vnode,
     type: vnode.type,
     setupState: {},
+    slots: {},
     props: {}
   }
   return instance
 }
 export function setupComponent(instance:any) {
   initProps(instance)
+  initSlots(instance, instance.vnode.children)
   setupStatefulComponent(instance)
 }
 

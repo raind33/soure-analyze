@@ -1,4 +1,4 @@
-import { h } from "../lib/mini-vue.esm.js"
+import { h, renderSlots } from "../lib/mini-vue.esm.js"
 
 export default {
   setup(props, emit) {
@@ -12,6 +12,6 @@ export default {
     return h('div', {class:'foo', onClick() {
       console.log('foo');
       
-    }, a: this.data}, 'foo')
+    }, a: this.data}, [h('p', null, 'app'), renderSlots(this.$slots)])
   }
 }
