@@ -1,3 +1,5 @@
+import { shallowReadonly } from "../reactivity/reactive"
+import { emit } from "./componentEmit"
 import { initProps } from "./componentProps"
 import { publicInstanceProxyHandlers } from "./componentPublicInstance"
 import { initSlots } from "./componentSlots"
@@ -9,12 +11,14 @@ export function createComponentInstance(vnode:Record<any,any>) {
     type: vnode.type,
     setupState: {},
     slots: {},
-    props: {}
+    props: {},
+    emit:() => {}
   }
+  instance.emit = emit.bind(null, instance) as any
   return instance
 }
 export function setupComponent(instance:any) {
-  initProps(instance)
+  initProps(instance, instance.vnode.props)
   initSlots(instance, instance.vnode.children)
   setupStatefulComponent(instance)
 }
@@ -25,22 +29,11 @@ function setupStatefulComponent(instance:any) {
   const { setup } = Component
 
   if(setup) {
-    const setupResult = setup(instance.props, emit.bind(null, instance))
+    const setupResult = setup(shallowReadonly(instance.props), {emit:instance.emit})
     handleSetupResult(instance,setupResult)
   }
 }
-function emit(instance:any, key:string) {
-  const captallize = (key: string) => {
-    return key.charAt(0).toUpperCase()+key.slice(1)
-  }
-  const onEvent = (key:string) => {
-    const str = captallize(key)
-    return 'on'+str
-  }
-  const props = instance.props
-  const event = onEvent(key)
-  props[event] && props[event]()
-}
+
 function handleSetupResult(instance:any, result:any) {
   if(typeof result === 'object') {
     instance.setupState = result

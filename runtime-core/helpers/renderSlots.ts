@@ -1,6 +1,6 @@
 import { h } from "../vnode"
 
-export function renderSlots(slots, key) {
+export function renderSlots(slots:any, key:any) {
   
   if(slots[key]) {
 

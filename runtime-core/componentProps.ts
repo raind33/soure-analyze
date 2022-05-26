@@ -1,3 +1,3 @@
-export function initProps(instance:any) {
-  instance.props = instance.vnode.props
+export function initProps(instance:any, props:any) {
+  instance.props = props || {}
 }

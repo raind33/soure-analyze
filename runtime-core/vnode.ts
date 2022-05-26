@@ -1,7 +1,7 @@
 import { ShapeFlags } from "../shared/ShapeFlags"
 import { isObject } from '../shared'
 export function createVNode(type:any, props?:any, children?: any) {
-  const vnode = {
+  const vnode:any = {
     type,
     props,
     children,

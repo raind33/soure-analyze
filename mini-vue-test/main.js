@@ -12,8 +12,10 @@ const app = createApp({
       console.log(888);
     }}, [
       h('span', {class: 'e'}, this.a),
-      h(Foo, { data: 32323, onAdd() {
-        console.log('add');
+      h(Foo, { data: 32323, onAdd(a,b) {
+        console.log('foo监听：onAdd',a,b);
+      },onAddFoo(a,b) {
+        console.log('onAddFoo',a,b);
       } },{ header: h('div', null, '我是slots'),footer: h('div', null, '我是slots2')})
     ])
   }
