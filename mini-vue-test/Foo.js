@@ -13,6 +13,6 @@ export default {
     return h('div', {class:'foo', onClick() {
       console.log('foo');
       
-    }, a: this.data+777}, [h('p', null, 'app'), renderSlots(this.$slots, 'header'), renderSlots(this.$slots, 'footer')])
+    }, a: this.data+777}, [h('p', null, 'app'), renderSlots(this.$slots, 'header', {name: 'slot1'}), renderSlots(this.$slots, 'footer')])
   }
 }

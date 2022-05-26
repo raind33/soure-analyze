@@ -16,7 +16,7 @@ const app = createApp({
         console.log('foo监听：onAdd',a,b);
       },onAddFoo(a,b) {
         console.log('onAddFoo',a,b);
-      } },{ header: h('div', null, '我是slots'),footer: h('div', null, '我是slots2')})
+      } },{ header: ({name}) => h('div', null, name),footer: () => h('div', null, '我是slots2')})
     ])
   }
 })
