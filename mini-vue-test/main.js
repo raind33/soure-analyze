@@ -14,7 +14,7 @@ const app = createApp({
       h('span', {class: 'e'}, this.a),
       h(Foo, { data: 32323, onAdd() {
         console.log('add');
-      } },[h('div', null, '我是slots'),h('div', null, '我是slots2')])
+      } },{ header: h('div', null, '我是slots'),footer: h('div', null, '我是slots2')})
     ])
   }
 })

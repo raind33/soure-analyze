@@ -12,6 +12,6 @@ export default {
     return h('div', {class:'foo', onClick() {
       console.log('foo');
       
-    }, a: this.data}, [h('p', null, 'app'), renderSlots(this.$slots)])
+    }, a: this.data}, [h('p', null, 'app'), renderSlots(this.$slots, 'header'), renderSlots(this.$slots, 'footer')])
   }
 }
