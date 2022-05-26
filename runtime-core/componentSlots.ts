@@ -1,10 +1,13 @@
-import { h } from './vnode'
 export function initSlots(instance:any, children:any) {
-  let slots:any = {}
+  normalizeObjectSlots(children, instance.slots)
+}
+function normalizeObjectSlots(children:any, slots:any) {
   for(let key in children) {
     const val = children[key]
-    slots[key] = Array.isArray(val) ? val : [val]
+    slots[key] = normalizeSlotValue(val)
   }
-  instance.slots = slots
+}
+function normalizeSlotValue(val:any) {
+  return Array.isArray(val) ? val : [val]
 }
 
