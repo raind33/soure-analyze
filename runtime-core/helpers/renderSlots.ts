@@ -1,9 +1,9 @@
-import { h } from "../vnode"
+import { Fragment, h } from "../vnode"
 
 export function renderSlots(slots:any, key:any, params:any) {
   
   if(slots[key]) {
 
-    return h('div', null, slots[key](params))
+    return h(Fragment, null, slots[key](params))
   }
 }

@@ -1,4 +1,4 @@
-import { createApp, h } from '../lib/mini-vue.esm.js'
+import { createApp, h,createTextVNode } from '../lib/mini-vue.esm.js'
 import Foo from './Foo.js'
 const app = createApp({
   setup () {
@@ -11,6 +11,7 @@ const app = createApp({
     return h('div', { id: 'd', class: 'c', onClick() {
       console.log(888);
     }}, [
+      createTextVNode('我是文本节点'),
       h('span', {class: 'e'}, this.a),
       h(Foo, { data: 32323, onAdd(a,b) {
         console.log('foo监听：onAdd',a,b);
