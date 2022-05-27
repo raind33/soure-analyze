@@ -1,5 +1,9 @@
+import { ShapeFlags } from "../shared/ShapeFlags"
+
 export function initSlots(instance:any, children:any) {
-  normalizeObjectSlots(children, instance.slots)
+  if(instance.vnode.shapeFlag & ShapeFlags.SLOTS_CHILDREN) {
+    normalizeObjectSlots(children, instance.slots)
+  }
 }
 function normalizeObjectSlots(children:any, slots:any) {
   for(let key in children) {

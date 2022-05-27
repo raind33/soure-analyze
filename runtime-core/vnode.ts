@@ -13,7 +13,18 @@ export function createVNode(type:any, props?:any, children?: any) {
   } else if(Array.isArray(children)) {
     vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN
   }
+  normalizeChildren(vnode, children);
   return vnode
+}
+export function normalizeChildren(vnode:any, children:any) {
+  if (typeof children === "object") {
+    if (vnode.shapeFlag & ShapeFlags.ELEMENT) {
+      // 如果是 element 类型的话，那么 children 肯定不是 slots
+    } else {
+      // 这里就必然是 component 了,
+      vnode.shapeFlag |= ShapeFlags.SLOTS_CHILDREN;
+    }
+  }
 }
 export function h(type:any, props?:any, children?:any) {
   return createVNode(type, props, children)
