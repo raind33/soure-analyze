@@ -5,13 +5,15 @@ import { publicInstanceProxyHandlers } from "./componentPublicInstance"
 import { initSlots } from "./componentSlots"
 
 
-export function createComponentInstance(vnode:Record<any,any>) {
+export function createComponentInstance(vnode:Record<any,any>, parent:any) {
   const instance = {
     vnode,
     type: vnode.type,
     setupState: {},
     slots: {},
     props: {},
+    provides: parent? parent.provides:{},
+    parent,
     emit:() => {}
   }
   instance.emit = emit.bind(null, instance) as any

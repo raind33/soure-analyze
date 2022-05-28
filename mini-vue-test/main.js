@@ -1,10 +1,11 @@
-import { createApp, h,createTextVNode, getCurrentInstance } from '../lib/mini-vue.esm.js'
-import Foo from './Foo.js'
+import { createApp, h,createTextVNode, getCurrentInstance, provide } from '../lib/mini-vue.esm.js'
+import Foo from './Parent.js'
 const app = createApp({
   name: 'App',
   setup () {
     const app = getCurrentInstance()
-    console.log(app);
+    provide('father', 'father')
+    console.log('app instance',app);
     return {
       a: '13239999'
     }
