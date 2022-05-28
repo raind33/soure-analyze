@@ -1,8 +1,8 @@
 import typescript from '@rollup/plugin-typescript';
 export default {
-  input: "./runtime-core/index.ts",
+  input: "./index.ts",
   plugins: [typescript({
-    include: ['./runtime-core/**/*.ts', './shared/**/*.ts', './reactivity/**/*.ts'],
+    include: ['./runtime-core/**/*.ts', './runtime-dom/**/*.ts', './shared/**/*.ts', './reactivity/**/*.ts'],
     tsconfig: './tsconfig-vue.json'
   })],
   output: [
