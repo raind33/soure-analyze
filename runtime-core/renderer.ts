@@ -6,7 +6,7 @@ import {  createAppApi } from "./createApp";
 import { Fragment, Text } from "./vnode";
 
 export function createRenderer(options:any):any {
-  const { createElement, patchProps, insert } = options
+  const { createElement: hostCreateElement, patchProps: hostPatchProps, insert: hostInsert } = options
   function render(vnode: any, container: any) {
     patch(null, vnode, container, null);
   }
@@ -52,11 +52,11 @@ export function createRenderer(options:any):any {
 
   function mountElement(vnode: any, container: any, parent: any) {
     const { type, children, props } = vnode;
-    const el: HTMLElement = (vnode.el = createElement(type));
+    const el: HTMLElement = (vnode.el = hostCreateElement(type));
     if (isObject(props)) {
       for (let prop in props) {
         const val = props[prop];
-        patchProps(el, prop, val)
+        hostPatchProps(el, prop, null, val)
       }
     }
     if (vnode.shapeFlag & ShapeFlags.TEXT_CHILDREN) {
@@ -64,10 +64,29 @@ export function createRenderer(options:any):any {
     } else if (vnode.shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
       mountChildren(vnode, el, parent);
     }
-    insert(el, container)
+    hostInsert(el, container)
   }
   function patchElement(n1:any,n2:any, container:any, parent:any) {
     console.log('patchElement')
+    const newProps = n2.props || {}
+    const oldProps = n1.props || {}
+    const el = (n2.el = n1.el)
+    patchProps(el, oldProps, newProps)
+  }
+  function patchProps(el:any, oldProps:any, newProps:any) {
+    for(const key in newProps) {
+      const newVal = newProps[key]
+      const oldVal = oldProps[key]
+      if(newVal !== oldVal) {
+        hostPatchProps(el, key, oldVal, newVal)
+      }
+    }
+
+    for(const oldProp in oldProps) {
+      if(!(oldProp in newProps)) {
+        hostPatchProps(el, oldProp)
+      }
+    }
   }
   function mountChildren(n2: any, container: any, parent: any) {
     n2.children.forEach((child: any) => {
