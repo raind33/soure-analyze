@@ -3,7 +3,7 @@ import { createVNode } from "./vnode"
 interface Component {
   [prop: string]:any
 }
-export function createAppApi(render) {
+export function createAppApi(render:any) {
   return function createApp(rootComponent:Component) {
     const app = {
       mount(rootContainer:any) {

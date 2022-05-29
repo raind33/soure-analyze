@@ -11,7 +11,7 @@ export function patchProps(el:any,prop:any, val:any) {
     el.setAttribute(prop, val);
   } 
 }
-export function insert(el, parent) {
+export function insert(el:any, parent:any) {
   parent.appendChild(el)
 }
 

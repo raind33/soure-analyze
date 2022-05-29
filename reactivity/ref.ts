@@ -1,4 +1,3 @@
-import { unref } from "vue"
 import { isObject } from "../shared"
 import { isTracking, trackEffects, triggerEffects } from "./effect"
 import { reactive } from "./reactive"
@@ -51,7 +50,7 @@ export function unRef(ref: any) {
 export function proxyRefs(objectWithRef: any) {
   return new Proxy(objectWithRef, {
     get(target, key) {
-      return unref(target[key])
+      return unRef(Reflect.get(target, key))
     },
     set(target, key, val) {
       if(isRef(target[key]) && !isRef(val)) {
