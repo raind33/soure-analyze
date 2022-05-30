@@ -1,7 +1,7 @@
 import { getCurrentInstance, h, inject, ref, renderSlots } from "../lib/mini-vue.esm.js"
 
-const nextChildren = 'nextChildren'
-const prevChildren = [h('div', null, 'child1'), h('div', null, 'child2')]
+const prevChildren = 'nextChildren'
+const  nextChildren = [h('div', null, 'child1'), h('div', null, 'child2')]
 export default {
   name: 'Son',
   setup(props, {emit}) {
