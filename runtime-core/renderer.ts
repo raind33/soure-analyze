@@ -67,7 +67,6 @@ export function createRenderer(options:any):any {
     hostInsert(el, container, anchor)
   }
   function patchElement(n1:any,n2:any, container:any, parent:any, anchor:any) {
-    console.log('patchElement')
     const newProps = n2.props || {}
     const oldProps = n1.props || {}
     const el = (n2.el = n1.el)
@@ -149,16 +148,24 @@ export function createRenderer(options:any):any {
         const keyToNewIndexMap = new Map()
         const toBePatched = e2 -i + 1
         const newIndexToOldIndexMap = new Array(toBePatched).fill(0)
-      
+        let move = false
+        let patched = 0
+        let lastIndex = 0
          for(let j = i;j<= e2;j++) {
           keyToNewIndexMap.set(c2[j].key, j)
          }
          for(let n =i;n<=e1;n++) {
            const prevChild = c1[n]
+
+           // 优化 新节点patch完后，移除剩下的老节点,
+           if(patched >= toBePatched) {
+            hostRemove(prevChild.el)
+            continue
+           }
            let newIndex
            if(prevChild.key !== undefined) {
              // 时间复杂度O(1)
-            newIndex = keyToNewIndexMap.get(c1[n].key)
+            newIndex = keyToNewIndexMap.get(prevChild.key)
            } else {
             // 如果没key 的话，那么只能是遍历所有的新节点来确定当前节点存在不存在了
             // 时间复杂度O(n)
@@ -169,18 +176,25 @@ export function createRenderer(options:any):any {
               }
             }
            }
-
+           
            if(newIndex === undefined){
             hostRemove(prevChild.el)
            } else{
-            newIndexToOldIndexMap[newIndex-i] = n + 1
+             if(newIndex >= lastIndex) {
+              lastIndex = newIndex
+             } else {
+               move = true
+               console.log('move',move)
+             }
+             patched++
+             newIndexToOldIndexMap[newIndex-i] = n + 1
              patch(prevChild, c2[newIndex], container, parent, null)
            }
          }
 
          // 递增子序列，即稳定序列，不需要移动的新节点索引位置
          // 然后遍历要patch的节点，如果不在这个子序列中，就是要移动的节点
-         const increasingNewIndexSequence = getSequence(newIndexToOldIndexMap)
+         const increasingNewIndexSequence = move ? getSequence(newIndexToOldIndexMap):[]
          let j = increasingNewIndexSequence.length - 1
          // 倒叙保证节点的正确插入
          for(let x=toBePatched-1;x>=0;x--) {
@@ -190,7 +204,7 @@ export function createRenderer(options:any):any {
            // 不存在老节点中的新节点
           if(newIndexToOldIndexMap[x] === 0) {
             patch(null, nextChild, container, parent, anchorPos)
-          } else {
+          } else if(move) {
             if(j < 0 || increasingNewIndexSequence[j] !== x) {
               hostInsert(nextChild.el, container, anchorPos);
             } else {
@@ -251,7 +265,6 @@ export function createRenderer(options:any):any {
         const subTree: any = instance.render.call(instance.proxy)
         const prevSubTree = instance.subTree
         instance.subTree = subTree
-        console.log(prevSubTree, subTree)
         patch(prevSubTree, subTree, container, instance, null);
       }
     })

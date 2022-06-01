@@ -5,6 +5,7 @@ const prevChildren = [
   h("div", { key: "B" }, "B"),
   h("div", { key: "E" }, "E"),
   h("div", { key: "C" }, "C"),
+  h("div", { key: "D" }, "D"),
   h("div", { key: "L" }, "L"),
   h("div", { key: "F" }, "F"),
   h("div", { key: "G" }, "G"),
