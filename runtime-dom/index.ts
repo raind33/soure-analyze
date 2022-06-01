@@ -15,8 +15,8 @@ export function patchProps(el:any,prop:any, oldVal:any, newVal:any) {
     }
   } 
 }
-export function insert(el:any, parent:any) {
-  parent.appendChild(el)
+export function insert(el:any, parent:any, anchor:any=null) {
+  parent.insertBefore(el, anchor)
 }
 
 const renderer = createRenderer({
