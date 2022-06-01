@@ -5,13 +5,15 @@ import leftDiff from './elementDiffDemos/newMoreThanOldleftDiff.js'
 import rightDiff from './elementDiffDemos/newMoreThanOldRightDiff.js'
 import newLessThanOldleftDiff from './elementDiffDemos/newLessThanOldleftDiff.js'
 import newLessThanOldRightDiff from './elementDiffDemos/newLessThanOldRightDiff.JS'
+import core from './elementDiffDemos/core.js'
+
 const app = createApp({
   name: 'App',
   setup() {
 
   },
   render() {
-    return h(newLessThanOldRightDiff)
+    return h(core)
   }
 })
 
