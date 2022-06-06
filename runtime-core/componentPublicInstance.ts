@@ -4,7 +4,8 @@ const publicPropertiesMap:any = {
   $el: (instance:any) => {
     return instance.vnode.el
   },
-  $slots: (instance:any) => instance.slots
+  $slots: (instance:any) => instance.slots,
+  $props: (instance:any) => instance.props
 }
 export const publicInstanceProxyHandlers = {
   get(target:any, key:any) {

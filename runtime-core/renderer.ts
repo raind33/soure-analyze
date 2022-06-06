@@ -40,7 +40,15 @@ export function createRenderer(options:any):any {
     container.appendChild(text);
   }
   function processComponent(n1:any, n2: any, container: any, parent: any, anchor:any) {
-    mountComponent(n2, container, parent, anchor);
+    if(!n1) {
+      mountComponent(n2, container, parent, anchor);
+    } else {
+      updateComponent(n1, n2)
+    }
+  }
+  function updateComponent(n1:any, n2:any) {
+    const instance = (n2.component = n1.component)
+    instance.update()
   }
   function processElement(n1:any, n2: any, container: any, parent: any, anchor:any) {
     if(!n1) {
@@ -246,13 +254,13 @@ export function createRenderer(options:any):any {
     });
   }
   function mountComponent(initialVnode: any, container: any, parent: any, anchor:any) {
-    const instance = createComponentInstance(initialVnode, parent);
+    const instance = (initialVnode.component = createComponentInstance(initialVnode, parent))
     setupComponent(instance);
     setupRenderEffect(instance, container, initialVnode, anchor);
   }
 
   function setupRenderEffect(instance: any, container: any, initialVnode: any, anchor:any) {
-    effect(() => {
+    instance.update = effect(() => {
       if(!instance.isMounted) { // 初始化
 
         const subTree: any = (instance.subTree = instance.render.call(instance.proxy))
