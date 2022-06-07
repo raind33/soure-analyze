@@ -4,6 +4,7 @@ import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { shouldComponentUpdate } from "./componentUpdateUtils";
 import {  createAppApi } from "./createApp";
+import { queueJob } from "./scheduler";
 import { Fragment, Text } from "./vnode";
 
 export function createRenderer(options:any):any {
@@ -49,13 +50,13 @@ export function createRenderer(options:any):any {
   }
   function updateComponent(n1:any, n2:any) {
     const instance = (n2.component = n1.component)
+    console.log(99)
     if(shouldComponentUpdate(n1, n2)) {
       instance.next = n2
       instance.update()
     } else {
       n2.el = n1.el
       instance.vnode = n2
-      instance.next = null
     }
   }
   function processElement(n1:any, n2: any, container: any, parent: any, anchor:any) {
@@ -289,8 +290,14 @@ export function createRenderer(options:any):any {
         instance.subTree = subTree
         patch(prevSubTree, subTree, container, instance, null);
       }
+    }, {
+      scheduler() {
+        console.log('scheduler 执行')
+        queueJob(instance.update)
+      }
     })
   }
+  
   function updateComponentPreRender(instance:any, nextVnode:any) {
     instance.vnode = nextVnode
     instance.props = nextVnode.props

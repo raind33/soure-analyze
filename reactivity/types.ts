@@ -12,3 +12,7 @@ export interface ReactiveEffectRunner<T = any> {
   effect: ReactiveEffect
 }
 export type Dep = Set<ReactiveEffect>
+export interface EffectOptions {
+  onStop?:Fn,
+  scheduler?:Fn
+}
