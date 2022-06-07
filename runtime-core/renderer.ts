@@ -2,6 +2,7 @@ import { effect } from "../reactivity/effect";
 import { isObject } from "../shared/";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
+import { shouldComponentUpdate } from "./componentUpdateUtils";
 import {  createAppApi } from "./createApp";
 import { Fragment, Text } from "./vnode";
 
@@ -48,7 +49,14 @@ export function createRenderer(options:any):any {
   }
   function updateComponent(n1:any, n2:any) {
     const instance = (n2.component = n1.component)
-    instance.update()
+    if(shouldComponentUpdate(n1, n2)) {
+      instance.next = n2
+      instance.update()
+    } else {
+      n2.el = n1.el
+      instance.vnode = n2
+      instance.next = null
+    }
   }
   function processElement(n1:any, n2: any, container: any, parent: any, anchor:any) {
     if(!n1) {
@@ -270,12 +278,24 @@ export function createRenderer(options:any):any {
         instance.isMounted = true
       } else {
         console.log('update')
+        const { next, vnode } = instance
+        if(next) {
+          next.el = vnode.el
+          updateComponentPreRender(instance, next)
+          
+        }
         const subTree: any = instance.render.call(instance.proxy)
         const prevSubTree = instance.subTree
         instance.subTree = subTree
         patch(prevSubTree, subTree, container, instance, null);
       }
     })
+  }
+  function updateComponentPreRender(instance:any, nextVnode:any) {
+    instance.vnode = nextVnode
+    instance.props = nextVnode.props
+    instance.next = null
+    
   }
   function getSequence(arr: number[]): number[] {
     const p = arr.slice();
