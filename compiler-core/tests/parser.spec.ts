@@ -19,4 +19,18 @@ describe('parser', () => {
       });
     });
   });
+  describe("element", () => {
+    test("simple element", () => {
+      // 1. 看看是不是一个 {{ 开头的
+      // 2. 是的话，那么就作为 插值来处理
+      // 3. 获取内部 message 的内容即可
+      const ast = baseParse("<div></div>");
+      const interpolation = ast.children[0];
+
+      expect(interpolation).toStrictEqual({
+        type: NodeTypes.ELEMENT,
+        tag: 'div'
+      });
+    });
+  });
 })
