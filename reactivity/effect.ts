@@ -1,5 +1,5 @@
 import { extend } from "../shared"
-import { Dep, Fn, Original, ReactiveEffectRunner } from "./types"
+import { Dep, EffectOptions, Fn, Original, ReactiveEffectRunner } from "./types"
 
 let activeEffect:ReactiveEffect // 只有reactive配合effect使用时, 才会存在activeEffect
 let shouldTrack: boolean = true  // stop后，避免再次收集依赖
@@ -32,7 +32,7 @@ export class ReactiveEffect {
   }
 }
 
-export function effect(fn: Fn, options?:any):ReactiveEffectRunner {
+export function effect(fn: Fn, options?:EffectOptions):ReactiveEffectRunner {
   const _effect = new ReactiveEffect(fn)
   extend(_effect, options)
   _effect.run()
