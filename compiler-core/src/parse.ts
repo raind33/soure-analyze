@@ -7,7 +7,7 @@ enum TagType {
 }
 export function baseParse(content:string) {
   const context = createParseContext(content)
-  return createRoot(parseChildren(context))
+  return createRoot(parseChildren(context, []))
 }
 
 function createParseContext(content:string) {
@@ -21,29 +21,69 @@ function createRoot(children: any) {
   }
 }
 
-function parseChildren(context:Context) {
+function parseChildren(context:Context, ancestors: string[]) {
   const nodes:any = []
-  const s = context.source
-  let node
-  if(s.startsWith('{{')){
-    node = parseInterpolation(context)
-    nodes.push(node)
-  } else if(s.startsWith('<')){
-    if(/[a-z]/i.test(s[1])) {
-      node = parseElement(context)
+  
+  while(!isEnd(context, ancestors)) {
+    let node
+    const s = context.source
+    if(s.startsWith('{{')){
+      node = parseInterpolation(context)
+    } else if(s.startsWith('<')){
+      if(/[a-z]/i.test(s[1])) {
+        node = parseElement(context, ancestors)
+      }
+    } else {
+      node = parseText(context)
     }
+    nodes.push(node)
   }
-  nodes.push(node)
 
   return nodes
 }
-function parseElement(context:Context) {
-  const element = parseTag(context, TagType.START)
-  parseTag(context, TagType.END)
+function isEnd(context:Context, ancestors:string[]) {
+  if(!context.source) return true
+  for(let i = ancestors.length - 1;i>=0;i--) {
+    const tag = ancestors[i]
+    const endTag = context.source.slice(2, tag.length+2)
+    if(endTag === tag) return true
+  
+  }
+}
+// rain {{message}}</div>
+function parseText(context: Context) {
+  const endTokens = ["{{", "</"]
+  let endIndex = context.source.length
+  for(let i = 0;i<endTokens.length;i++){
+    const endToken = endTokens[i]
+    const index = context.source.indexOf(endToken)
+    if(index > -1 && endIndex > index) {
+      endIndex = index
+    }
+  }
+  const content = context.source.slice(0, endIndex)
+  advance(context, content.length)
+  return {
+    type: NodeTypes.TEXT,
+    content
+  }
+}
+function parseElement(context:Context, ancestors:string[]) {
+  const element:any = parseTag(context, TagType.START)
+  ancestors.push(element.tag)
+  element.children = parseChildren(context, ancestors)
+  ancestors.pop()
+  // unclose tag <div><span></div>
+  if(element.tag === context.source.slice(2, element.tag.length+2)) {
+    parseTag(context, TagType.END)
+  } else {
+    throw new Error(`unclose tag: ${element.tag}`)
+    return
+  }
   return element
 }
 function parseTag(context:Context, type: TagType) {
-  const match = /^<\/?([a-z]*)/i.exec(context.source)
+  const match = /^<\/?([a-z]*)/i.exec(context.source)!
   const content = match[1]
   advance(context, match[0].length)
   advance(context, 1)
