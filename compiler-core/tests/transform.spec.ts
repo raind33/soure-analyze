@@ -3,7 +3,7 @@ import { baseParse } from "../src/parse"
 import { transform } from "../src/transform"
 
 describe('transform', () => {
-  test.only('update', () => {
+  test('update', () => {
     const ast = baseParse('<div>rain,{{message}}</div>')
     const transformText = (node) => {
       if(node.type === NodeTypes.TEXT) {

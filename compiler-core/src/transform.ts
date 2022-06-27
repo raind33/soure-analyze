@@ -1,5 +1,6 @@
-export function transform(root, options) {
+export function transform(root, options={}) {
   const context = createTransformContext(root, options)
+  root.code = root.children[0]
   traverseNode(root, context)
 }
 
@@ -7,9 +8,9 @@ function traverseNode(node:any, context:any) {
   context.nodeTransforms.forEach(transform => {
     transform(node)
   })
-  transformChildren(node, context)
+  traverseChildren(node, context)
 }
-function transformChildren(node:any, context:any) {
+function traverseChildren(node:any, context:any) {
   if(node.children) {
     node.children.forEach(node => {
       traverseNode(node, context)
