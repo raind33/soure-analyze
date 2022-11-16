@@ -1,37 +1,17 @@
-import { createApp, h,createTextVNode, getCurrentInstance, provide, ref } from '../lib/mini-vue.esm.js'
-import child from './child.js'
-const app = createApp({
-  name: 'App',
-  setup() {
-    const msg = ref('aa')
-    const count = ref(1)
-    const changeChildProps = () => {
-      msg.value = 'bbb'
-    }
-    const changeCount = () => {
-      count.value++
-    }
-    return {
-      msg,
-      changeChildProps,
-      count,
-      changeCount
-    }
-  },
-  render() {
-    return h('div', null, [
-      h('button', {
-        onClick: this.changeChildProps
-      }, '修改child prop'),
-      h(child, {
-        msg: this.msg
-      }),
-      h('button', {
-        onClick: this.changeCount
-      }, '修改不属于props的自身属性，不应更新子组件'),
-      h('p', null, "count:"+this.count)
-    ])
+import { reactive, effect } from '../lib/mini-vue.esm.js'
+
+const obj = reactive({
+  a: 1,
+  b: {
+    c: 99
   }
 })
 
-app.mount(document.querySelector('#app'))
+effect(() => {
+  console.log(obj.a)
+})
+setTimeout(() => {
+  debugger
+  obj.a++
+}, 2000)
+

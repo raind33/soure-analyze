@@ -6,6 +6,8 @@ import { Original } from "./types"
 const get = createGetter()
 const set = createSetter()
 const readonlyGet = createGetter(true)
+const shallowGet = createGetter(false, true)
+const shallowSet = createSetter(true)
 const shallowReadonlyGet = createGetter(true, true)
 function createGetter<T extends Original>(isReadonly:boolean=false, shallow:boolean=false) {
   return function get(target:T, key:any) {
@@ -15,11 +17,11 @@ function createGetter<T extends Original>(isReadonly:boolean=false, shallow:bool
       return isReadonly
     }
     const result = Reflect.get(target, key)
-    if(shallow) {
-      return result
-    }
     if(!isReadonly) {
       track(target, key)
+    }
+    if(shallow) {
+      return result
     }
     if(isObject(result)) { // 嵌套对象取值时，响应化处理
       return isReadonly ? readonly(result) : reactive(result)
@@ -27,7 +29,7 @@ function createGetter<T extends Original>(isReadonly:boolean=false, shallow:bool
     return result
   }
 }
-function createSetter<T extends Original>() {
+function createSetter<T extends Original>(shallow = false) {
   return function (target: T, key:any, val:any) {
     const result = Reflect.set(target, key, val)
       trigger(target, key)
@@ -44,6 +46,10 @@ export const readonlyHandlers = {
     console.warn('not set')
     return true
   }
+}
+export const shallowReactiveHandlers = {
+  get: shallowGet,
+  set: shallowSet
 }
 export const shallowReadonlyHandlers = extend({},readonlyHandlers, {
   get: shallowReadonlyGet

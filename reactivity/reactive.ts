@@ -1,29 +1,38 @@
-import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers } from "./baseHandlers"
+import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers, shallowReactiveHandlers } from "./baseHandlers"
 import { Original } from "./types"
 
 export enum ReactiveFlags {
   IS_REACTIVE = '__v_isReactive',
   IS_READONLY = '__v_isReadonly',
+  IS_SHALLOW = '__v_isShallow',
+}
+export interface Target {
+  [ReactiveFlags.IS_REACTIVE]?:boolean
+  [ReactiveFlags.IS_READONLY]?:boolean
+  [ReactiveFlags.IS_SHALLOW]?:boolean
 }
 
 export function reactive<T extends Original>(raw: T) {
-
-  return createActiveObject(raw, mutableHandlers)
+  if(isReadonly(raw)) return raw
+  return createReactiveObject(raw, false, mutableHandlers)
 }
 
 export function readonly<T extends Original>(raw: T) {
 
-  return createActiveObject<T>(raw, readonlyHandlers)
+  return createReactiveObject<T>(raw, true, readonlyHandlers)
 }
 export function shallowReadonly<T extends Original>(raw: T) {
-  return createActiveObject<T>(raw, shallowReadonlyHandlers)
+  return createReactiveObject<T>(raw, true, shallowReadonlyHandlers)
 }
-function createActiveObject<T extends Original>(raw: T, handlers: any) {
-  return new Proxy(raw, handlers) 
+export function shallowReactive<T extends Original>(raw: T) {
+  return createReactiveObject<T>(raw, false, shallowReactiveHandlers)
+}
+function createReactiveObject<T extends Original>(raw: T, isReadonly: boolean, handlers: ProxyHandler<any>) {
+  return new Proxy<T>(raw, handlers) 
 }
 
-export function isReadonly(obj: any): boolean {
-  return !!obj[ReactiveFlags.IS_READONLY]
+export function isReadonly(value: unknown): boolean {
+  return !!(value && (value as Target)[ReactiveFlags.IS_READONLY])
 }
 export function isReactive(obj: any): boolean {
   return !!obj[ReactiveFlags.IS_REACTIVE]
