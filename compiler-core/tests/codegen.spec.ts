@@ -7,7 +7,7 @@ describe('generate', () => {
   test('text', () => {
     const ast = baseParse('rain')
     transform(ast)
-    const code = generate(ast)
+    const { code } = generate(ast)
     expect(code).toMatchSnapshot()
   })
 })
