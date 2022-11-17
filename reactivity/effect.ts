@@ -69,6 +69,7 @@ export function isTracking():boolean {
 export function trigger(target:Original, key:any) {
   const depsMap = targetMap.get(target)
   const deps = depsMap!.get(key)
+  if(!deps) return
   triggerEffects(deps!)
 }
 export function triggerEffects(deps: Dep) {

@@ -8,10 +8,11 @@ const obj = reactive({
 })
 
 effect(() => {
-  console.log(obj.a)
+  console.log(obj.b.c)
 })
 setTimeout(() => {
   debugger
   obj.a++
+  obj.b.c++
 }, 2000)
 
